@@ -34,6 +34,8 @@
 # Visual C++
 *.ncb
 *.opt
+*.plg
+*.idb
 
 # Resource file
 *.RES
