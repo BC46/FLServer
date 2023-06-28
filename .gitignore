@@ -30,3 +30,16 @@
 *.exe
 *.out
 *.app
+
+# Visual C++
+*.ncb
+*.opt
+
+# Resource file
+*.RES
+
+# CLion
+.idea
+
+# VSCode
+.vscode
