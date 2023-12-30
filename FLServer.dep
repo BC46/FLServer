@@ -1,0 +1,39 @@
+# Microsoft Developer Studio Generated Dependency File, included by FLServer.mak
+
+.\FLServer.cpp : \
+	".\FLServer.h"\
+	".\FLServerDoc.h"\
+	".\FLServerView.h"\
+	".\MainFrm.h"\
+	".\StdAfx.h"\
+	
+
+.\FLServer.rc : \
+	".\res\FLServer.ico"\
+	".\res\FLServer.rc2"\
+	".\res\FLServerDoc.ico"\
+	".\res\Toolbar.bmp"\
+	
+
+.\FLServerDoc.cpp : \
+	".\FLServer.h"\
+	".\FLServerDoc.h"\
+	".\StdAfx.h"\
+	
+
+.\FLServerView.cpp : \
+	".\FLServer.h"\
+	".\FLServerDoc.h"\
+	".\FLServerView.h"\
+	".\StdAfx.h"\
+	
+
+.\MainFrm.cpp : \
+	".\FLServer.h"\
+	".\MainFrm.h"\
+	".\StdAfx.h"\
+	
+
+.\StdAfx.cpp : \
+	".\StdAfx.h"\
+	
