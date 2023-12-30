@@ -45,8 +45,59 @@ CFLServerApp theApp;
 /////////////////////////////////////////////////////////////////////////////
 // CFLServerApp initialization
 
+// EBUeula function definition
+typedef bool (EBUEula)(LPCSTR flRegKeyName, LPCSTR eulaPath, DWORD hasWarrantyFile, bool assumeNotAlreadyAccepted);
+
 BOOL CFLServerApp::InitInstance()
 {
+	// Try to load EBUEula.dll in the root Freelancer folder
+	HMODULE ebueulaModule = LoadLibraryA("..\\EBUEula.dll");
+
+	if (ebueulaModule == NULL)
+	{
+		// Try to load EBUEula.dll in the EXE folder if the root EBUEula.dll file cannot be loaded
+		ebueulaModule = LoadLibraryA("EBUEula.dll");
+
+		if (ebueulaModule == NULL)
+		{
+			// Show error and exit if the EXE EBUEula.dll file cannot be loaded either
+			MessageBoxA(NULL, "FreeLancer failed to attach to EBUEula.dll.", "Notice", MB_ICONERROR);
+			return FALSE;
+		}
+	}
+
+	// Try to locate the EBUEula function from the EBUEula dll
+	FARPROC ebueulaProc = GetProcAddress(ebueulaModule, "EBUEula");
+
+	if (ebueulaProc == NULL)
+	{
+		// If the EBUEula function cannot be loaded, show error and exit
+		MessageBoxA(NULL, "FreeLancer failed to find EBUEula entry point.", "Notice", MB_ICONERROR);
+		return FALSE;
+	}
+
+	// Define EULA-related paths
+	LPCSTR flRegKeyPath = "Software\\Microsoft\\Microsoft Games\\Freelancer\\1.0";
+	LPCSTR eulaFilePath = "..\\EULA.rtf";
+	LPCSTR warrantyFilePath = "..\\Warranty.rtf";
+
+	// Get the file attributes of Warranty.rtf, which doesn't even exist
+	DWORD warrantyFileAttributes = GetFileAttributesA(warrantyFilePath);
+
+	// Wtf?
+	DWORD hasWarrantyFile = -(int)(warrantyFileAttributes + 1) && warrantyFilePath;
+
+	// Call the EBUEUla function and find whether the user has accepted the EULA
+	EBUEula* EBUEulaFunction = (EBUEula*) *(ebueulaProc);
+	bool eulaAccepted = (EBUEulaFunction)(flRegKeyPath, eulaFilePath, hasWarrantyFile, TRUE);
+
+	// Unload the EBUEula module
+	FreeLibrary(ebueulaModule);
+
+	// Exit if the user hasn't accepted the EULA
+	if (!eulaAccepted)
+		return FALSE;
+
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size
 	//  of your final executable, you should remove from the following
