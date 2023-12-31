@@ -8,6 +8,7 @@
 #include "FLServerDoc.h"
 #include "FLServerView.h"
 
+#include "Common.h"
 #include "Dacom.h"
 
 #ifdef _DEBUG
@@ -104,9 +105,11 @@ BOOL CFLServerApp::InitInstance()
 
 	// TODO: Overwrite bool (__cdecl *CriticalWarningFn)(unsigned int, char const *), see 0x0040B90E
 
+	// Set buffer for the module file name
 	char moduleFileName[MAX_PATH];
 	ZeroMemory(&moduleFileName, MAX_PATH);
 
+	// Get FLserver.exe module file name
 	GetModuleFileNameA(GetModuleHandleA(NULL), moduleFileName, MAX_PATH);
 
 	DWORD major, minor, build;
@@ -123,12 +126,27 @@ BOOL CFLServerApp::InitInstance()
 	// Merge the major, minor, and build into one DWORD
 	g_VersionNumber = (((minor & 0xFF) | (major << 8)) << 16) | (build & 0xFFFF);
 
+	// Load server resources
 	HMODULE serverResModule = LoadLibraryA("ServerResources.dll");
 
 	if (serverResModule)
 	{
+		// If the server resources have been loaded, set it as the module resource handle
 		AFX_MODULE_STATE* moduleState = AfxGetModuleState();
 		moduleState->m_hCurrentResourceHandle = serverResModule;
+	}
+
+	// Specify that we are running a server
+	SetIsMPServer(true);
+
+	// TODO: write two bytes, see 0x40b9d
+
+	if (!AfxOleInit())
+	{
+		// If AfxOleInit failed, show an error message and exit
+		// 0x64 = OLE initialization failed string in ServerResources.dll
+		AfxMessageBox(0x64, MB_OK, -1);
+		return FALSE;
 	}
 
 
