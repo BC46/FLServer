@@ -193,31 +193,29 @@ END
 //
 
 VS_VERSION_INFO     VERSIONINFO
-  FILEVERSION       1,0,0,1
-  PRODUCTVERSION    1,0,0,1
+  FILEVERSION       1,0,1254,11
+  PRODUCTVERSION    1,0,1254,11
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
 #else
  FILEFLAGS 0x0L
 #endif
- FILEOS 0x4L
- FILETYPE 0x1L
+ FILEOS 0x40004L
+ FILETYPE 0x2L
  FILESUBTYPE 0x0L
 BEGIN
 	BLOCK "StringFileInfo"
 	BEGIN
-        BLOCK "040904B0"
+        BLOCK "040904b0"
 		BEGIN 
-			VALUE "CompanyName",     "\0"
-			VALUE "FileDescription", "FLServer MFC Application\0"
-			VALUE "FileVersion",     "1, 0, 0, 1\0"
-			VALUE "InternalName",    "FLServer\0"
-			VALUE "LegalCopyright",  "Copyright (C) 2023\0"
-			VALUE "LegalTrademarks", "\0"
-			VALUE "OriginalFilename","FLServer.EXE\0"
-			VALUE "ProductName",     "FLServer Application\0"
-			VALUE "ProductVersion",  "1, 0, 0, 1\0"
+			VALUE "CompanyName",     "Microsoft Corporation"
+			VALUE "FileDescription", "Freelancer\0"
+			VALUE "FileVersion",     "1, 0, 0, 0\0"
+			VALUE "LegalCopyright",  "\xA9 2003 Microsoft Corporation.  All rights reserved.\0"
+			VALUE "PrivateBuild", 	 "Release"
+			VALUE "ProductName",     "Freelancer\0"
+			VALUE "ProductVersion",  "1, 0, 0, 0\0"
 		END
 	END
 	BLOCK "VarFileInfo" 
