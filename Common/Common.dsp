@@ -83,10 +83,33 @@ LIB32=link.exe -lib
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=.\Common.def
+
+!IF  "$(CFG)" == "Common - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\Common.def
+
+"Release/Common.lib" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	lib /NOLOGO /MACHINE:IX86 /def:Common.def /name:COMMON /out:Release\Common.lib
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Common - Win32 Debug"
+
+!ENDIF 
+
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\Common.h
+# End Source File
 # End Group
 # End Target
 # End Project

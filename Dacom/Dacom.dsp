@@ -86,6 +86,21 @@ LIB32=link.exe -lib
 # Begin Source File
 
 SOURCE=.\Dacom.def
+
+!IF  "$(CFG)" == "Dacom - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\Dacom.def
+
+"Release/Dacom.lib" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	lib /NOLOGO /MACHINE:IX86 /def:Dacom.def /name:DACOM /out:Release\Dacom.lib
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Dacom - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Header Files"
