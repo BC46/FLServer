@@ -8,6 +8,8 @@
 #include "FLServerDoc.h"
 #include "FLServerView.h"
 
+#include "Dacom.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -48,6 +50,8 @@ CFLServerApp theApp;
 // EBUeula function definition
 typedef bool (EBUEula)(LPCSTR flRegKeyName, LPCSTR eulaPath, DWORD hasWarrantyFile, bool assumeNotAlreadyAccepted);
 
+DWORD g_VersionNumber;
+
 BOOL CFLServerApp::InitInstance()
 {
 	// Try to load EBUEula.dll in the root Freelancer folder
@@ -85,11 +89,11 @@ BOOL CFLServerApp::InitInstance()
 	DWORD warrantyFileAttributes = GetFileAttributesA(warrantyFilePath);
 
 	// Wtf?
-	DWORD hasWarrantyFile = -(int)(warrantyFileAttributes + 1) && warrantyFilePath;
+	DWORD hasWarrantyFile = -(int)(warrantyFileAttributes != -1) & (DWORD) warrantyFilePath;
 
-	// Call the EBUEUla function and find whether the user has accepted the EULA
+	// Call the EBUEUla function and see whether the user has accepted the EULA
 	EBUEula* EBUEulaFunction = (EBUEula*) *(ebueulaProc);
-	bool eulaAccepted = (EBUEulaFunction)(flRegKeyPath, eulaFilePath, hasWarrantyFile, TRUE);
+	bool eulaAccepted = (EBUEulaFunction)(flRegKeyPath, eulaFilePath, hasWarrantyFile, true);
 
 	// Unload the EBUEula module
 	FreeLibrary(ebueulaModule);
@@ -97,6 +101,36 @@ BOOL CFLServerApp::InitInstance()
 	// Exit if the user hasn't accepted the EULA
 	if (!eulaAccepted)
 		return FALSE;
+
+	// TODO: Overwrite bool (__cdecl *CriticalWarningFn)(unsigned int, char const *), see 0x0040B90E
+
+	char moduleFileName[MAX_PATH];
+	ZeroMemory(&moduleFileName, MAX_PATH);
+
+	GetModuleFileNameA(GetModuleHandleA(NULL), moduleFileName, MAX_PATH);
+
+	DWORD major, minor, build;
+
+	// Try to get the version info
+	if (DACOM_GetDllVersion(moduleFileName, &major, &minor, &build) != 0)
+	{
+		// Set the version info manually if the GetDllVersion function failed
+		major = 1;
+		minor = 0;
+		build = 11;
+	}
+
+	// Merge the major, minor, and build into one DWORD
+	g_VersionNumber = (((minor & 0xFF) | (major << 8)) << 16) | (build & 0xFFFF);
+
+	HMODULE serverResModule = LoadLibraryA("ServerResources.dll");
+
+	if (serverResModule)
+	{
+		AFX_MODULE_STATE* moduleState = AfxGetModuleState();
+		moduleState->m_hCurrentResourceHandle = serverResModule;
+	}
+
 
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size
